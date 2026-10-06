@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Steward Copilot</title>
+<meta name="description" content="Steward Copilot is an independent software studio building consumer copilots for time-critical bookings. Now building TeeSniper, a tee-time assistant for golfers.">
+<meta property="og:title" content="Steward Copilot">
+<meta property="og:description" content="An independent software studio building consumer copilots for time-critical bookings.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23175c43'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='18' fill='%23f3efe6' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E">
+<style>
+  @font-face {
+    font-family: "Outfit"; font-style: normal; font-weight: 400; font-display: swap;
+    src: url(https://cdn.jsdelivr.net/fontsource/fonts/outfit@latest/latin-400-normal.woff2) format("woff2");
+  }
+  @font-face {
+    font-family: "Outfit"; font-style: normal; font-weight: 500; font-display: swap;
+    src: url(https://cdn.jsdelivr.net/fontsource/fonts/outfit@latest/latin-500-normal.woff2) format("woff2");
+  }
+  @font-face {
+    font-family: "Outfit"; font-style: normal; font-weight: 600; font-display: swap;
+    src: url(https://cdn.jsdelivr.net/fontsource/fonts/outfit@latest/latin-600-normal.woff2) format("woff2");
+  }
+
+  :root {
+    --bg: #f6f6f3;
+    --bg-band: #eeeeea;
+    --surface: #ffffff;
+    --text: #1d201e;
+    --text-soft: #52564f;
+    --line: #dddcd6;
+    --accent: #175c43;
+    --accent-ink: #f2f0e9;
+    --frame: #23251f;
+    --radius: 14px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #141614;
+      --bg-band: #1b1e1b;
+      --surface: #1f221f;
+      --text: #e9ebe7;
+      --text-soft: #a4a89f;
+      --line: #32352f;
+      --accent: #58c194;
+      --accent-ink: #10231a;
+      --frame: #000000;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #141614;
+    --bg-band: #1b1e1b;
+    --surface: #1f221f;
+    --text: #e9ebe7;
+    --text-soft: #a4a89f;
+    --line: #32352f;
+    --accent: #58c194;
+    --accent-ink: #10231a;
+    --frame: #000000;
+  }
+
+  * { box-sizing: border-box; margin: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Outfit", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
+  a { color: inherit; }
+
+  /* ---- nav ---- */
+  header {
+    position: sticky; top: 0; z-index: 10;
+    background: var(--bg);
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav { height: 64px; display: flex; align-items: center; justify-content: space-between; }
+  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 600; font-size: 17px; letter-spacing: -0.01em; white-space: nowrap; }
+  .brand svg { display: block; }
+  .nav-links { display: flex; gap: 28px; font-size: 15px; }
+  .nav-links a { text-decoration: none; color: var(--text-soft); transition: color .2s; }
+  .nav-links a:hover { color: var(--text); }
+
+  /* ---- hero ---- */
+  .hero { padding: 72px 0 88px; }
+  .hero-grid { display: grid; grid-template-columns: 7fr 5fr; gap: 56px; align-items: center; }
+  h1 {
+    font-size: clamp(2.1rem, 4.5vw, 3.4rem);
+    font-weight: 600; letter-spacing: -0.03em; line-height: 1.08;
+    max-width: 14ch;
+  }
+  .hero p { margin-top: 20px; color: var(--text-soft); font-size: 1.1rem; max-width: 44ch; }
+  .cta-row { margin-top: 32px; display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn {
+    display: inline-block; text-decoration: none; font-weight: 500; font-size: 15px;
+    padding: 12px 24px; border-radius: 999px; transition: transform .15s, opacity .2s;
+  }
+  .btn:active { transform: translateY(1px) scale(.98); }
+  .btn-primary { background: var(--accent); color: var(--accent-ink); }
+  .btn-primary:hover { opacity: .9; }
+  .btn-ghost { border: 1px solid var(--line); color: var(--text); }
+  .btn-ghost:hover { border-color: var(--text-soft); }
+
+  /* ---- phone frame (real screenshots inside) ---- */
+  .phone {
+    width: min(300px, 78vw); margin: 0 auto;
+    border-radius: 34px; padding: 10px;
+    background: var(--frame);
+    box-shadow: 0 24px 60px color-mix(in srgb, var(--frame) 28%, transparent);
+  }
+  .phone img { display: block; width: 100%; height: auto; border-radius: 26px; }
+  .phone-caption { margin-top: 14px; text-align: center; font-size: 13.5px; color: var(--text-soft); }
+  .phone.tilt { transform: rotate(1.5deg); }
+  .phone.tilt-l { transform: rotate(-1.5deg); }
+
+  /* ---- sections ---- */
+  section { padding: 88px 0; }
+  .band { background: var(--bg-band); }
+  h2 { font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 600; letter-spacing: -0.02em; line-height: 1.15; }
+  .section-head { max-width: 60ch; margin-bottom: 48px; }
+  .section-head p { margin-top: 14px; color: var(--text-soft); }
+
+  /* ---- product ---- */
+  .product-grid { display: grid; grid-template-columns: 5fr 7fr; gap: 64px; align-items: center; }
+  .feature-list { display: grid; gap: 0; }
+  .feature-list > div { padding: 22px 0; }
+  .feature-list > div + div { border-top: 1px solid var(--line); }
+  .feature-list h3 { font-size: 1.05rem; font-weight: 600; }
+  .feature-list p { margin-top: 6px; color: var(--text-soft); font-size: 0.98rem; max-width: 52ch; }
+  .status {
+    display: inline-block; margin-top: 28px; padding: 8px 16px; border-radius: 999px;
+    border: 1px solid var(--line); font-size: 14px; color: var(--text-soft);
+  }
+
+  /* ---- portfolio ---- */
+  .portfolio { display: grid; grid-template-columns: 1fr 1fr; gap: 0 64px; }
+  .portfolio > div { padding: 26px 0; border-top: 1px solid var(--line); }
+  .portfolio .p-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .portfolio h3 { font-size: 1.08rem; font-weight: 600; }
+  .portfolio h3 a { text-decoration: none; border-bottom: 2px solid color-mix(in srgb, var(--accent) 35%, transparent); }
+  .portfolio h3 a:hover { border-color: var(--accent); }
+  .tag {
+    font-size: 12px; font-weight: 500; padding: 3px 10px; border-radius: 999px;
+    border: 1px solid var(--line); color: var(--text-soft);
+  }
+  .tag-live { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .portfolio p { margin-top: 8px; color: var(--text-soft); font-size: 0.97rem; max-width: 50ch; }
+
+  /* ---- principles ---- */
+  .principles { display: grid; grid-template-columns: 1fr 1fr; gap: 48px 64px; }
+  .principles h3 { font-size: 1.1rem; font-weight: 600; }
+  .principles > div { border-left: 3px solid var(--accent); padding-left: 20px; }
+  .principles p { margin-top: 10px; color: var(--text-soft); font-size: 0.98rem; }
+
+  /* ---- contact ---- */
+  .contact p { color: var(--text-soft); max-width: 50ch; margin-top: 14px; }
+  .contact-mail {
+    display: inline-block; margin-top: 28px; font-size: clamp(1.2rem, 2.6vw, 1.7rem);
+    font-weight: 600; letter-spacing: -0.01em; color: var(--accent);
+    text-decoration: none; border-bottom: 2px solid color-mix(in srgb, var(--accent) 35%, transparent);
+    transition: border-color .2s;
+  }
+  .contact-mail:hover { border-color: var(--accent); }
+
+  footer { border-top: 1px solid var(--line); padding: 28px 0 40px; color: var(--text-soft); font-size: 14px; }
+
+  @media (max-width: 860px) {
+    .hero { padding: 48px 0 64px; }
+    .hero-grid, .product-grid { grid-template-columns: 1fr; gap: 44px; }
+    .product-grid .phone-col { order: 2; }
+    .principles { grid-template-columns: 1fr; gap: 36px; }
+    .portfolio { grid-template-columns: 1fr; gap: 0; }
+    section { padding: 64px 0; }
+    .nav-links { gap: 14px; font-size: 13.5px; }
+    .brand { font-size: 15px; gap: 8px; }
+    .phone.tilt, .phone.tilt-l { transform: none; }
+  }
+  @media (max-width: 430px) {
+    .wrap { padding: 0 16px; }
+    .brand { font-size: 13.5px; gap: 7px; }
+    .brand svg { width: 24px; height: 24px; }
+    .nav-links { gap: 11px; font-size: 12.5px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .btn, .nav-links a, .contact-mail { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="#">
+      <svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true">
+        <rect width="32" height="32" rx="8" fill="var(--accent)"/>
+        <path d="M20.8 11.2c-.9-1-2.3-1.6-4-1.6-2.9 0-4.9 1.5-4.9 3.8 0 2 1.4 3 4.3 3.7 2.6.6 3.3 1.1 3.3 2.2 0 1.2-1.1 1.9-2.8 1.9-1.8 0-3.2-.8-4-2.1l-1.9 1.5c1.1 1.8 3.2 2.9 5.8 2.9 3.2 0 5.3-1.6 5.3-4.1 0-2.1-1.4-3.2-4.5-3.9-2.5-.6-3.1-1-3.1-2 0-1 1-1.7 2.5-1.7 1.4 0 2.5.5 3.3 1.5z" fill="var(--accent-ink)"/>
+      </svg>
+      Steward Copilot
+    </a>
+    <nav class="nav-links">
+      <a href="#teesniper">Product</a>
+      <a href="#principles">Principles</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <h1>Copilots for time-critical bookings.</h1>
+      <p>Steward Copilot is an independent software studio. Our products watch fast-moving
+         inventory and tell people the moment it matters.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="mailto:bk.jeon@stewardcopilot.com">Get in touch</a>
+        <a class="btn btn-ghost" href="#teesniper">See TeeSniper</a>
+      </div>
+    </div>
+    <div>
+      <div class="phone tilt">
+        <img src="assets/teesniper-app.png" alt="TeeSniper pilot app home screen showing a hot-deal tee time and an active watch rule" width="780" height="1688">
+      </div>
+      <div class="phone-caption">TeeSniper pilot build</div>
+    </div>
+  </div>
+</section>
+
+<section id="teesniper" class="band">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Now building: TeeSniper</h2>
+      <p>A tee-time assistant for golfers. You tell it when and where you want to play.
+         It watches availability around the clock and alerts you the moment a matching
+         tee time or deal appears, so booking happens while the slot still exists.</p>
+    </div>
+    <div class="product-grid">
+      <div class="phone-col">
+        <div class="phone tilt-l">
+          <img src="assets/teesniper-rules.png" alt="TeeSniper watch-rule builder: courses, weekdays, tee-off window, party size and budget" width="780" height="1688">
+        </div>
+        <div class="phone-caption">Creating a watch rule</div>
+      </div>
+      <div class="feature-list">
+        <div>
+          <h3>Saved preferences, not saved searches</h3>
+          <p>Courses, days, tee-off window, party size and budget become a standing watch
+             rule with an expiry date. No daily re-searching.</p>
+        </div>
+        <div>
+          <h3>Alerts measured in seconds</h3>
+          <p>Cancellations and new hot deals surface the moment they are listed. The alert
+             links straight to the booking page.</p>
+        </div>
+        <div>
+          <h3>Booking through official channels</h3>
+          <p>Reservations complete on the marketplace that lists the tee time, under its
+             terms. We bring the demand; the booking stays where it belongs.</p>
+        </div>
+        <div>
+          <h3>Built for real scarcity</h3>
+          <p>Weekend morning slots in a busy metro disappear in minutes. TeeSniper exists
+             so a golfer who will actually play the round gets there first.</p>
+        </div>
+      </div>
+    </div>
+    <span class="status">Working prototype in private pilot. Launching in Los Angeles and Orange County.</span>
+  </div>
+</section>
+
+<section id="products">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>More from the studio</h2>
+      <p>TeeSniper is the newest of several consumer products built and operated
+         under Steward Copilot.</p>
+    </div>
+    <div class="portfolio">
+      <div>
+        <div class="p-head">
+          <h3><a href="https://mypersonalityhub.com">My Personality Hub</a></h3>
+          <span class="tag tag-live">Live</span>
+        </div>
+        <p>Personality intelligence platform: 14 test frameworks, an AI coach and
+           couple compatibility, in six languages.</p>
+      </div>
+      <div>
+        <div class="p-head">
+          <h3><a href="https://wonderkidsai.com">WonderKids</a></h3>
+          <span class="tag tag-live">Live</span>
+        </div>
+        <p>A family journal for kids: daily emotion check-ins, an artwork gallery,
+           and AI bedtime stories starring your child's own drawings.</p>
+      </div>
+      <div>
+        <div class="p-head">
+          <h3><a href="https://saymorrow.com">SayMorrow</a></h3>
+          <span class="tag tag-live">Live</span>
+        </div>
+        <p>An AI speaking coach that turns a learner's real conversation mistakes
+           into tomorrow's personal review, across ten languages.</p>
+      </div>
+      <div>
+        <div class="p-head">
+          <h3><a href="https://cogniplan.app">CogniPlan</a></h3>
+          <span class="tag tag-live">Live</span>
+        </div>
+        <p>An offline-first productivity app with an AI executive assistant that
+           plans your day across tasks, notes, calendar and email.</p>
+      </div>
+      <div>
+        <div class="p-head">
+          <h3><a href="https://silverconnect-production.up.railway.app">Silver Connect</a></h3>
+          <span class="tag">Preview</span>
+        </div>
+        <p>A senior care companion exploring medication checks, non-diagnostic
+           cognitive trends and a caregiver dashboard.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="principles">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>How we integrate</h2>
+      <p>Products that sit on top of marketplaces only work long-term when the marketplace
+         is better off for it. These rules are written into our code, not just our copy.</p>
+    </div>
+    <div class="principles">
+      <div>
+        <h3>Official channels first</h3>
+        <p>Where a partner or affiliate API exists, we use it, and every booking completes
+           on the platform that lists the inventory. Our job is converting intent into
+           completed reservations for the marketplace and its courses.</p>
+      </div>
+      <div>
+        <h3>Respectful request volumes</h3>
+        <p>Availability is cached so one query serves every user watching the same course.
+           Rate limits slow our scanning down; they are never retried against.</p>
+      </div>
+      <div>
+        <h3>One golfer, one round</h3>
+        <p>No inventory hoarding and no resale, by design. A watch rule secures at most
+           one tee time, for one person, who intends to play it.</p>
+      </div>
+      <div>
+        <h3>Verified before automated</h3>
+        <p>Nothing books automatically until the integration is verified end to end.
+           Release gates in the codebase stay closed until that evidence exists.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="band contact">
+  <div class="wrap">
+    <h2>Working on a marketplace, a course group, or a booking platform?</h2>
+    <p>We are actively seeking platform partnerships for TeeSniper, including affiliate
+       API access. Byungkwon Jeon, founder.</p>
+    <a class="contact-mail" href="mailto:bk.jeon@stewardcopilot.com">bk.jeon@stewardcopilot.com</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">© 2026 Steward Copilot LLC. All rights reserved.</div>
+</footer>
+
+</body>
+</html>
